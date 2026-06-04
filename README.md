@@ -182,15 +182,7 @@ YOLO检测
 
 农业机器人视觉系统
 
-🚀 未来工作
 
-多作物行检测优化
-
-GPS + 视觉融合导航
-
-边缘计算设备优化
-
-基于强化学习的自动控制策略
 
 👨‍💻 作者
 
@@ -198,17 +190,9 @@ Yifan Liu
 
 AI产品经理 | 计算机视觉 | 智慧农业
 
-滑铁卢大学
-Electrical and Computer Engineering (MEng)
 
-🤝 贡献
 
-欢迎提交 Issue 或 Pull Request 改进项目。
-
-⭐ 支持项目
 
 如果这个项目对你有帮助，欢迎给项目点一个 Star ⭐
 
-📜 开源协议
 
-本项目基于 MIT License 开源。
