@@ -44,6 +44,18 @@ AgriRow Vision 是一个智慧农业视觉系统原型，面向农机田间作�
 
 系统模块和通信关系见 [架构说明](docs/ARCHITECTURE.md)。
 
+## 演示资料
+
+### 系统架构图
+
+![AgriRow Vision 系统架构](docs/assets/system-architecture.jpg)
+
+### 项目演示视频
+
+[播放或下载项目演示视频](docs/assets/project-demo.mp4)
+
+视频和架构图均已保存在仓库的 `docs/assets/` 目录中，不依赖原有的 GitHub 附件外链。
+
 ## 快速开始
 
 ### 1. 环境要求
@@ -110,7 +122,7 @@ agrirow-vision/
 ├── clientside/             # 指令、视频与消息通信
 ├── constant/               # 网络常量
 ├── design/                 # Draw.io 设计源文件与界面图
-├── docs/                   # 项目说明与系统架构
+├── docs/                   # 项目说明、系统架构与演示资料
 ├── ortho_record/           # 标定、鸟瞰变换、视频采集
 ├── service/                # 日志、时间与网络服务
 ├── ui/                     # 桌面端界面组件
