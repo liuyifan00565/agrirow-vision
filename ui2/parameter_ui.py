@@ -54,7 +54,7 @@ class Ui_Form(object):
         self.DemoBoard_parameter.setObjectName("DemoBoard_parameter")
         self.Camera_parameter = QtWidgets.QPushButton(Form)
         self.Camera_parameter.setGeometry(QtCore.QRect(110, 480, 241, 101))
-        self.Camera_parameter.setFocusPolicy(QtCore.Qt.Qt::FocusPolicy::WheelFocus)
+        self.Camera_parameter.setFocusPolicy(QtCore.Qt.WheelFocus)
         self.Camera_parameter.setStyleSheet("color: rgb(255, 255, 255);\n"
 "background-color: rgb(70, 72, 93);\n"
 "border-radius:5px;\n"

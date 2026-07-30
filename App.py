@@ -1,20 +1,16 @@
-import os
 import sys
+
 from PyQt5.QtWidgets import QApplication
-from ui.window import MyWindow
+from demo_onePageui2 import OrthophotoApp
 
 
-"""
-行间除草的前端系统代码
-"""
-
-# 切换到项目根目录
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(BASE_DIR)
-
-if __name__ == '__main__':
+def main() -> int:
+    """启动 AgriRow Vision 单页桌面原型。"""
     app = QApplication(sys.argv)
-    window = MyWindow()
+    window = OrthophotoApp()
     window.show()
-    sys.exit(app.exec_())
+    return app.exec_()
+
+
+if __name__ == "__main__":
+    sys.exit(main())

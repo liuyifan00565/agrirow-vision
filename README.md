@@ -1,198 +1,152 @@
-基于计算机视觉和国产边缘设备的智能农机自动对行系统
+# AgriRow Vision
 
-(Computer Vision-Based Intelligent Crop Row Alignment System on Domestic Edge Devices)
+面向智能农机的作物行视觉感知与对行控制原型
 
-<p align="center">
+[项目概览](#项目概览) · [系统流程](#系统流程) · [快速开始](#快速开始) · [项目结构](#项目结构) · [当前边界](#当前边界)
 
+![监控界面设计](design/监控大屏概要设计.png)
 
+## 项目概览
 
+AgriRow Vision 是一个智慧农业视觉系统原型，面向农机田间作业中的作物行识别、视角校正、横向偏移估计与设备控制。项目将相机视频处理、鸟瞰变换、目标检测、偏移曲线显示和边缘端通信整合到 PyQt5 桌面界面中，用于验证“视觉感知—状态展示—控制指令”闭环方案。
 
-![系统架构](https://github.com/user-attachments/assets/a046adaf-4651-42a9-9841-e5b83bd1dff9)
+本仓库主要展示系统客户端、视觉算法原型和软硬件通信设计。项目曾以华为昇腾类边缘设备和 PLC 为目标部署环境；相关硬件服务端、专用模型权重和完整实验数据未包含在公开仓库中。
 
+## 核心工作
 
+- 设计相机画面到鸟瞰视角的透视变换流程，支持相机内外参与输出分辨率配置。
+- 基于目标检测结果计算目标中心相对画面中心的横向偏移，并实时绘制偏移曲线。
+- 实现视频文件、摄像头和远端视频流的接入原型。
+- 设计指令与视频双通道客户端，支持参数同步、模型切换和 PLC 控制指令。
+- 使用 PyQt5 实现监控、参数配置、日志查看和设备状态展示界面。
+- 使用 Draw.io 记录系统数据流和界面设计。
 
-https://github.com/user-attachments/assets/2e22ffdc-bad2-45f8-921a-3a1bee74ff53
+## 系统流程
 
+```text
+摄像头 / 视频文件 / 边缘端视频流
+                  │
+                  ▼
+             视频帧采集
+                  │
+                  ▼
+        去畸变与鸟瞰视角变换
+                  │
+                  ▼
+            目标检测与可视化
+                  │
+                  ▼
+           作物行横向偏移估计
+                  │
+                  ▼
+        界面显示 / 控制指令输出
+```
 
+系统模块和通信关系见 [架构说明](docs/ARCHITECTURE.md)。
 
+## 快速开始
 
-</p>
+### 1. 环境要求
 
-本项目是一个 基于计算机视觉的农机自动对行系统，用于辅助农业机械在田间作业过程中识别作物行并保持精准对齐。
+- Python 3.9–3.11
+- Windows 或 Linux 桌面环境
+- 摄像头（可选）
+- 边缘端视觉服务与 PLC（仅联机功能需要）
 
-系统结合 深度学习、计算机视觉与工业控制技术，通过视觉检测作物行位置，计算农业机械的偏移量，并为控制系统提供调整依据，从而提升农业机械作业效率与精度。
+> PyQt5 桌面程序在无图形界面的服务器环境中不能直接显示。
 
-📌 项目亮点
+### 2. 安装
 
-✨ 作物行视觉识别
+```bash
+git clone https://github.com/liuyifan00565/agrirow-vision.git
+cd agrirow-vision
 
-使用 YOLO/Unet++ 深度学习模型检测作物行
+python -m venv .venv
+```
 
-适应复杂田间环境
+Windows：
 
-✨ 正射（俯视）变换
+```bash
+.venv\Scripts\activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
 
-将摄像头画面转换为俯视视角
+macOS / Linux：
 
-提高作物行中心计算精度
+```bash
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+```
 
-✨ 实时偏移量计算
+### 3. 运行
 
-计算农机中心与作物行中心之间的偏移量
+启动单页系统原型：
 
-✨ 边缘设备部署
+```bash
+python App.py
+```
 
-将模型部署在国产华为昇腾开发板
+启动独立的 YOLO 检测与偏移演示：
 
-适用于农机车载计算设备
+```bash
+python CropOffset.py
+```
 
-✨ 工业设备集成
+`CropOffset.py` 默认加载 `YOLO/yolov8n.pt`。该文件是通用预训练权重，用于验证检测界面和偏移计算链路，并非本项目的作物专用训练结果。
 
-支持 PLC通信
+### 4. 联机配置
 
-可接入农机控制系统
+客户端默认通信参数保存在 `interrow_param.txt`。使用边缘设备前，请根据实际网络环境修改服务端 IP、视频端口和指令端口。未启动服务端时，界面仍可用于查看与本地视频相关的原型功能，但远端视频、参数同步和 PLC 指令不可用。
 
-🎥 系统演示
-系统界面
+## 项目结构
 
-检测效果
+```text
+agrirow-vision/
+├── App.py                  # 推荐入口：单页系统原型
+├── CropOffset.py           # YOLO 检测与偏移曲线演示
+├── YOLO/                   # YOLO 界面、示例权重
+├── clientside/             # 指令、视频与消息通信
+├── constant/               # 网络常量
+├── design/                 # Draw.io 设计源文件与界面图
+├── docs/                   # 项目说明与系统架构
+├── ortho_record/           # 标定、鸟瞰变换、视频采集
+├── service/                # 日志、时间与网络服务
+├── ui/                     # 桌面端界面组件
+├── ui2/                    # 第二版界面实验代码
+├── interrow_param.txt      # 设备参数示例
+└── requirements.txt        # Python 依赖
+```
 
-🏗 系统架构
-            摄像头输入
-                │
-                ▼
-           视频帧采集
-                │
-                ▼
-         正射变换（Bird-Eye）
-                │
-                ▼
-           YOLO作物检测
-                │
-                ▼
-           作物行中心提取
-                │
-                ▼
-           偏移量计算
-                │
-                ▼
-           PLC控制系统
-📂 项目结构
-Smart-Agri-Row-Alignment
-│
-├── YOLO/                     # YOLO模型相关代码与权重
-│
-├── clientside/               # 客户端通信模块
-│
-├── constant/                 # 系统常量定义
-│
-├── controller/               # 控制逻辑模块
-│
-├── design/                   # 系统设计相关文件
-│
-├── ortho_record/             # 正射变换与记录模块
-│
-├── service/                  # 系统服务层
-│
-├── ui/                       # PyQt界面组件
-│
-├── ui2/                      # 第二版UI界面
-│
-├── view/                     # UI视图模块
-│
-├── App.py                    # 系统主程序入口
-│
-├── new_App.py                # 新版本主程序
-│
-├── CropOffset.py             # 作物行偏移量计算
-│
-├── artui_ui.py               # UI界面代码
-│
-├── console_ui.py             # 控制台界面
-│
-├── demo_onePageui.py         # 单页面UI演示
-│
-├── demo_onePageui2.py        # 单页面UI演示版本2
-│
-├── demo_twoPageui.py         # 双页面UI演示
-│
-├── mainContral-onePageui.py  # 中控系统主界面
-│
-├── interrow_param.txt        # 行间参数配置
-│
-├── test_client_side.py       # 客户端测试模块
-│
-├── try2.py                   # 实验测试代码
-│
-└── README.md
-⚙️ 安装方法
-1 克隆项目
-git clone https://github.com/YOUR_USERNAME/Smart-Agri-Row-Alignment.git
+根目录中的 `demo_*.py`、`try2.py` 和 `mainContral-onePageui.py` 为开发过程中保留的界面或算法实验，用于呈现方案迭代，不作为推荐入口。
 
-cd Smart-Agri-Row-Alignment
-2 安装依赖
-pip install -r requirements.txt
+## 当前边界
 
-主要依赖：
+为了使仓库内容与项目陈述一致，以下内容需要单独说明：
 
-ultralytics
-opencv-python
-numpy
-pyqt5
-torch
-▶️ 运行系统
-python main.py
+- 仓库未提供作物专用训练集、自训练权重、训练脚本和定量评测结果，因此目前不能仅凭此仓库复现实验精度。
+- `YOLO/yolov8n.pt` 为通用预训练权重；替换为自训练模型后才能评估具体作物场景。
+- 边缘设备服务端和 PLC 控制程序不在本仓库中，联机控制需配套服务。
+- 部分旧版界面依赖未公开的 `res/` 资源，已保留为迭代记录；推荐从 `App.py` 启动当前单页原型。
+- IP、相机参数和作物行参数均为示例值，部署前必须重新标定和配置。
 
-系统运行流程：
+项目背景、技术路线和研究价值的集中介绍见 [项目概览](docs/PROJECT_OVERVIEW.md)。
 
-1️⃣ 初始化摄像头
-2️⃣ 启动视频处理
-3️⃣ 使用 YOLO 进行作物检测
-4️⃣ 计算作物行中心位置
-5️⃣ 计算农机偏移量
-6️⃣ 在界面显示检测结果
+## 后续计划
 
-📊 图像处理流程
-视频输入
-   │
-   ▼
-视频帧提取
-   │
-   ▼
-正射变换
-   │
-   ▼
-YOLO检测
-   │
-   ▼
-作物行中心提取
-   │
-   ▼
-偏移量计算
-   │
-   ▼
-控制系统输出
-🌱 应用场景
+- 补充数据采集、标注规则、训练配置和实验结果。
+- 将相机参数、网络地址和模型路径统一迁移到配置文件。
+- 拆分大型界面脚本，补充单元测试与接口测试。
+- 完成昇腾端模型转换、性能测试和端到端时延评估。
+- 增加离线演示数据，使项目在无硬件条件下可以完整复现。
 
-自动驾驶农业机械
-
-智能除草机器人
-
-精准农业设备
-
-农业机器人视觉系统
-
-
-
-👨‍💻 作者
+## 作者
 
 Yifan Liu
 
-AI产品经理 | 计算机视觉 | 智慧农业
+研究方向：计算机视觉、智慧农业与边缘智能
 
+## 使用说明
 
-
-
-如果这个项目对你有帮助，欢迎给项目点一个 Star ⭐
-
-
+本仓库暂未声明开源许可证。代码仅用于学习、交流和项目展示；如需复制、修改或用于其他项目，请先联系作者获得许可。

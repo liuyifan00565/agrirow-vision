@@ -1,4 +1,6 @@
 import sys
+from pathlib import Path
+
 import cv2
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -35,7 +37,8 @@ class MainWindow(QtWidgets.QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.model = YOLO("yolov8n.pt")
+        model_path = Path(__file__).resolve().parent / "YOLO" / "yolov8n.pt"
+        self.model = YOLO(model_path)
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.update_frame)
 

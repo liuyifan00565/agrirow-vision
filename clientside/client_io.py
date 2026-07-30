@@ -4,7 +4,7 @@ from clientside.video_client import InrowVideoClient
 from ui.interrow_video_client import InterrowVideoClient
 from clientside.param import Parameter
 from clientside.system_enum import MessageType,SystemType
-import os
+from pathlib import Path
 
 class IOClient:
     def __init__(self,server_ip,video_port,instruction_port,system_type):
@@ -34,10 +34,8 @@ class IOClient:
         param_file_name = "inrow_param.txt"
         if self.system_type == 'interrow_weeder':
             param_file_name = "interrow_param.txt"
-        current_file_path = os.path.abspath(__file__)
-        current_dir = os.path.dirname(current_file_path)
-        # print(current_dir)
-        param = Parameter(current_dir+'\..\\'+param_file_name)
+        project_root = Path(__file__).resolve().parent.parent
+        param = Parameter(project_root / param_file_name)
         param.load()
         return param
     
